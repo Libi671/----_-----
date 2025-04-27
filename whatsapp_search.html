@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חיפוש קבוצות וואטסאפ</title>
+    <title>האוצר מתחת לגשר - חיפוש קבוצות וואטסאפ</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             line-height: 1.6;
+            color: #333;
         }
         .container {
             max-width: 800px;
@@ -138,20 +139,101 @@
             padding-bottom: 5px;
             display: inline-block;
         }
+        
+        /* סגנון חדש עבור ההסבר והדרכה */
+        .intro-container {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-right: 5px solid #25D366;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .main-title {
+            color: #128C7E;
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #555;
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .intro-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .steps-list {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .steps-list li {
+            margin-bottom: 10px;
+        }
+        .steps-list strong {
+            color: #128C7E;
+        }
+        .warning-box {
+            background-color: #FFF9E6;
+            border-right: 4px solid #FFD54F;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .tool-section {
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 25px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>חיפוש קבוצות וואטסאפ עם מילות מפתח</h1>
-        
-        <div class="search-form">
-            <input type="text" id="keyword" class="search-input" placeholder="הכנס מילת מפתח (לדוגמה: שיווק שותפים)">
-            <button onclick="performSearch()" class="search-button">חפש</button>
+        <!-- חלק חדש - הסבר והדרכה -->
+        <div class="intro-container">
+            <h1 class="main-title">האוצר מתחת לגשר</h1>
+            <h2 class="subtitle">הדרך הכי פשוטה להשיג את רשימת הדיוור שתמיד רצית</h2>
+            
+            <p class="intro-text">
+                אוצר המספרים הגדול ביותר שתוכל להשיג לשיווק העסק שלך נמצא ממש כאן בתוך ידיך. 
+                שים לב שבכל קבוצות ווטסאפ יש אלפי אנשי קשר שיכולים להתאים לדיוור שלך.
+            </p>
+            
+            <p class="intro-text">
+                יצרתי לך כלי פשוט שתוכל להשיג אותם. מה שצריך לעשות הוא פשוט:
+            </p>
+            
+            <ol class="steps-list">
+                <li><strong>חפש נושאים קרובים לתחום בו אתה עוסק.</strong></li>
+                <li><strong>בחיפוש מטה תמצא קבוצות ווטסאפ שקשורות לנושא החיפוש.</strong></li>
+                <li><strong>כנס לקבוצות האלה דרך ווטסאפ ווב.</strong></li>
+                <li><strong>כשאתה בתוך הווטסאפ ווב לחץ על הכפתור "הצגת רשימת מספרי הטלפון" שמתחת שם הקבוצה.</strong></li>
+                <li><strong>לחץ מקש ימני בעכבר ואז קונטרול C.</strong></li>
+                <li><strong>חזור לכלי שיצרתי והזן את המערך שהועתק לשדה התחתון.</strong></li>
+                <li><strong>זהו! תקבל את רשימת אנשי הקשר מהקבוצה. תוכל להעתיק את הרשימה לגוגל שייטס או למקום אחר.</strong></li>
+            </ol>
+            
+            <div class="warning-box">
+                <strong>שים לב:</strong> יש איסור חוקי לשלוח הודעות SMS למי שלא נתן לך אישור. הכלי מתאים בעיקר ליצירת רשימת דיוור מדויקת לפייסבוק.
+            </div>
         </div>
         
-        <div id="results" class="results"></div>
+        <!-- חלק החיפוש -->
+        <div class="tool-section">
+            <h2 class="section-title">חיפוש קבוצות וואטסאפ עם מילות מפתח</h2>
+            
+            <div class="search-form">
+                <input type="text" id="keyword" class="search-input" placeholder="הכנס מילת מפתח (לדוגמה: שיווק שותפים)">
+                <button onclick="performSearch()" class="search-button">חפש</button>
+            </div>
+            
+            <div id="results" class="results"></div>
+        </div>
         
-        <!-- חלק חדש לחילוץ מספרי טלפון -->
+        <!-- חלק חילוץ מספרי טלפון -->
         <div class="phone-extractor">
             <h2 class="section-title">חילוץ מספרי טלפון מרשימות</h2>
             
