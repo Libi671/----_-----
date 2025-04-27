@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>האוצר מתחת לגשר - חיפוש לידים קבוצות וואטסאפ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .search-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .search-input {
+            padding: 8px;
+            width: 70%;
+            font-size: 16px;
+        }
+        .search-button {
+            padding: 8px 15px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-right: 4px solid #25D366;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-context {
+            background-color: white;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #eee;
+            margin-top: 10px;
+            white-space: pre-line;
+        }
+        .result-link {
+            color: #128C7E;
+            text-decoration: none;
+            display: block;
+            margin-top: 5px;
+        }
+        .result-link:hover {
+            text-decoration: underline;
+        }
+        .highlight {
+            background-color: #DCFAE3;
+            padding: 0 2px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        /* סגנון לחלק חילוץ מספרי טלפון */
+        .phone-extractor {
+            margin-top: 40px;
+            border-top: 2px solid #ddd;
+            padding-top: 20px;
+        }
+        .phone-input-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .phone-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            font-size: 14px;
+            direction: ltr;
+            text-align: left;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .extract-button {
+            padding: 8px 15px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .phone-results {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-line;
+            direction: ltr;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .copy-button {
+            padding: 8px 15px;
+            background-color: #128C7E;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #25D366;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        /* סגנון חדש עבור ההסבר והדרכה */
+        .intro-container {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-right: 5px solid #25D366;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .main-title {
+            color: #128C7E;
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #555;
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .intro-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .steps-list {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .steps-list li {
+            margin-bottom: 10px;
+        }
+        .steps-list strong {
+            color: #128C7E;
+        }
+        .warning-box {
+            background-color: #FFF9E6;
+            border-right: 4px solid #FFD54F;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .tool-section {
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- חלק חדש - הסבר והדרכה -->
+        <div class="intro-container">
+            <h1 class="main-title">האוצר מתחת לגשר</h1>
+            <h2 class="subtitle">הדרך הכי פשוטה להשיג את רשימת הדיוור שתמיד רצית</h2>
+            
+            <p class="intro-text">
+                אוצר המספרים הגדול ביותר שתוכל להשיג לשיווק העסק שלך נמצא ממש כאן בתוך ידיך. 
+                שים לב שבכל קבוצות ווטסאפ יש אלפי אנשי קשר שיכולים להתאים לדיוור שלך.
+            </p>
+            
+            <p class="intro-text">
+                יצרתי לך כלי פשוט שתוכל להשיג אותם. מה שצריך לעשות הוא פשוט:
+            </p>
+            
+            <ol class="steps-list">
+                <li><strong>חפש נושאים קרובים לתחום בו אתה עוסק.</strong></li>
+                <li><strong>בחיפוש מטה תמצא קבוצות ווטסאפ שקשורות לנושא החיפוש.</strong></li>
+                <li><strong>כנס לקבוצות האלה דרך ווטסאפ ווב.</strong></li>
+                <li><strong>כשאתה בתוך הווטסאפ ווב לחץ על הכפתור "הצגת רשימת מספרי הטלפון" שמתחת שם הקבוצה.</strong></li>
+                <li><strong>לחץ מקש ימני בעכבר ואז קונטרול C.</strong></li>
+                <li><strong>חזור לכלי שיצרתי והזן את המערך שהועתק לשדה התחתון.</strong></li>
+                <li><strong>זהו! תקבל את רשימת אנשי הקשר מהקבוצה. תוכל להעתיק את הרשימה לגוגל שייטס או למקום אחר.</strong></li>
+            </ol>
+            
+            <div class="warning-box">
+                <strong>שים לב:</strong> יש איסור חוקי לשלוח הודעות SMS למי שלא נתן לך אישור. הכלי מתאים בעיקר ליצירת רשימת דיוור מדויקת לפייסבוק.
+            </div>
+        </div>
+        
+        <!-- חלק החיפוש -->
+        <div class="tool-section">
+            <h2 class="section-title">חיפוש קבוצות וואטסאפ עם מילות מפתח</h2>
+            
+            <div class="search-form">
+                <input type="text" id="keyword" class="search-input" placeholder="הכנס מילת מפתח (לדוגמה: שיווק שותפים)">
+                <button onclick="performSearch()" class="search-button">חפש</button>
+            </div>
+            
+            <div id="results" class="results"></div>
+        </div>
+        
+        <!-- חלק חילוץ מספרי טלפון -->
+        <div class="phone-extractor">
+            <h2 class="section-title">חילוץ מספרי טלפון מרשימות</h2>
+            
+            <div class="phone-input-container">
+                <textarea id="phoneInput" class="phone-textarea" placeholder="הדבק כאן רשימה המכילה מספרי טלפון (כמו רשימת אנשי קשר מוואטסאפ)"></textarea>
+                <button onclick="extractPhoneNumbers()" class="extract-button">חלץ מספרי טלפון</button>
+            </div>
+            
+            <div id="phoneResults" class="phone-results" style="display: none;"></div>
+            <button id="copyButton" onclick="copyPhoneNumbers()" class="copy-button" style="display: none;">העתק הכל</button>
+        </div>
+    </div>
+    
+    <script>
+        // הגדרת קבועים עבור מנוע החיפוש המותאם אישית של Google
+        const API_KEY = 'AIzaSyDSsQgypxmJdT6iIys_2J4H8aFDfkTk6Ok';
+        const SEARCH_ENGINE_ID = '341995b6508ad4eae';
+        
+        async function performSearch() {
+            const keyword = document.getElementById('keyword').value.trim();
+            if (!keyword) {
+                alert('אנא הכנס מילת מפתח לחיפוש');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>מחפש...</p>';
+            
+            try {
+                // ביצוע חיפוש אמיתי באמצעות Google Programmable Search
+                const searchResults = await googleSearch(keyword);
+                
+                if (searchResults.length === 0) {
+                    resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות לחיפוש זה</div>';
+                    return;
+                }
+                
+                let resultsHtml = '';
+                searchResults.forEach(result => {
+                    const highlightedContext = highlightText(result.context, keyword);
+                    
+                    resultsHtml += `
+                        <div class="result-item">
+                            <div class="result-title">${result.title}</div>
+                            <a href="${result.url}" target="_blank" class="result-link">${result.url}</a>
+                            <div class="result-context">${highlightedContext}</div>
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.innerHTML = resultsHtml;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="no-results">שגיאה בעת ביצוע החיפוש: ${error.message}</div>`;
+                console.error('Search error:', error);
+            }
+        }
+        
+        function highlightText(text, keyword) {
+            // הדגשת מילת המפתח וקישורי וואטסאפ
+            const whatsappPattern = /(https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]+)/g;
+            const keywordRegex = new RegExp(keyword, 'gi');
+            
+            return text
+                .replace(whatsappPattern, '<span class="highlight">$1</span>')
+                .replace(keywordRegex, match => `<span class="highlight">${match}</span>`);
+        }
+        
+        async function googleSearch(keyword) {
+            try {
+                // יצירת שאילתת חיפוש: מילת המפתח + קישורי וואטסאפ
+                // מחפש את מילת המפתח שהוזנה + וואטסאפ לינק
+                const query = `${keyword} "https://chat.whatsapp.com/"`;
+                
+                // בניית ה-URL עבור ה-API של Google Custom Search
+                const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${encodeURIComponent(query)}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // בדיקה אם יש שגיאה בתשובה
+                if (data.error) {
+                    throw new Error(`Google API error: ${data.error.message}`);
+                }
+                
+                // בדיקה אם יש תוצאות
+                if (!data.items || data.items.length === 0) {
+                    return [];
+                }
+                
+                // עיבוד התוצאות למבנה הנתונים שאנחנו משתמשים בו
+                return data.items.map(item => {
+                    // חילוץ קטע טקסט מהתיאור או מתוכן הדף
+                    const snippet = item.snippet || '';
+                    
+                    // חיפוש קישור וואטסאפ בטקסט
+                    const whatsappLinkMatch = snippet.match(/(https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]+)/);
+                    const whatsappLink = whatsappLinkMatch ? whatsappLinkMatch[0] : item.link;
+                    
+                    return {
+                        title: item.title || 'ללא כותרת',
+                        url: whatsappLink,
+                        context: snippet
+                    };
+                });
+                
+            } catch (error) {
+                console.error('Error during Google search:', error);
+                throw error;
+            }
+        }
+        
+        // פונקציה חלופית למקרה שה-API של Google אינו זמין
+        async function fallbackSearch(keyword) {
+            console.log('Using fallback search with keyword:', keyword);
+            
+            // חיכוי קצר לדימוי חיפוש
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // תוצאות לדוגמה
+            return [
+                {
+                    title: "קבוצת שיווק שותפים - וואטסאפ",
+                    url: "https://chat.whatsapp.com/EF34zTC0Bxb59T0HkD7pKq",
+                    context: `קבוצת שיווק שותפים המובילה בישראל!
+הצטרפו עכשיו לקבוצה: https://chat.whatsapp.com/EF34zTC0Bxb59T0HkD7pKq
+למידע נוסף על שיווק שותפים והזדמנויות חדשות.`
+                },
+                {
+                    title: "פורום שיווק שותפים - דיונים והדרכות",
+                    url: "https://example.com/forum/affiliate-marketing",
+                    context: `שיווק שותפים - איך להתחיל? מדריך למתחילים
+רוצים ללמוד עוד? הצטרפו לקבוצת הוואטסאפ שלנו:
+https://chat.whatsapp.com/Ab12CdEfGhi3JklMnOpQrS`
+                },
+                {
+                    title: "קורס שיווק שותפים אונליין",
+                    url: "https://example.com/courses/affiliate-marketing",
+                    context: `הקורס המקיף ביותר לשיווק שותפים בישראל
+לשאלות ותמיכה הצטרפו לקהילה: https://chat.whatsapp.com/Jk56LmNoPq78RsTuVwXyz9
+שיווק שותפים הוא אחת הדרכים המובילות להכנסה פסיבית.`
+                }
+            ];
+        }
+        
+        // פונקציות לחילוץ מספרי טלפון
+        function extractPhoneNumbers() {
+            const inputText = document.getElementById('phoneInput').value.trim();
+            if (!inputText) {
+                alert('אנא הדבק טקסט המכיל מספרי טלפון');
+                return;
+            }
+            
+            // ביטוי רגולרי שמזהה מספרי טלפון במגוון פורמטים
+            const phoneRegex = /\+?([\d\s\-\(\)]{7,})/g;
+            
+            // מוצא את כל מספרי הטלפון בטקסט
+            let matches = inputText.match(phoneRegex) || [];
+            
+            // מנקה את המספרים - מסיר סימנים מיוחדים ואת ה-+
+            const cleanedNumbers = matches.map(match => {
+                // מסיר את כל התווים שאינם ספרות
+                return match.replace(/\+/, '').replace(/[^\d]/g, '');
+            });
+            
+            // מסנן כפילויות ומספרים קצרים מדי
+            const uniqueNumbers = [...new Set(cleanedNumbers)].filter(num => num.length >= 7);
+            
+            // אם לא נמצאו מספרים
+            if (uniqueNumbers.length === 0) {
+                document.getElementById('phoneResults').innerHTML = 'לא נמצאו מספרי טלפון בטקסט שהוזן';
+                document.getElementById('phoneResults').style.display = 'block';
+                document.getElementById('copyButton').style.display = 'none';
+                return;
+            }
+            
+            // מציג את המספרים
+            document.getElementById('phoneResults').innerHTML = uniqueNumbers.join('\n');
+            document.getElementById('phoneResults').style.display = 'block';
+            document.getElementById('copyButton').style.display = 'inline-block';
+        }
+        
+        // פונקציה להעתקת מספרי הטלפון ללוח
+        function copyPhoneNumbers() {
+            const phoneResultsText = document.getElementById('phoneResults').textContent;
+            
+            // שימוש ב-Clipboard API להעתקה ללוח
+            navigator.clipboard.writeText(phoneResultsText).then(() => {
+                // הודעה זמנית להצלחה
+                const originalText = document.getElementById('copyButton').textContent;
+                document.getElementById('copyButton').textContent = 'הועתק בהצלחה!';
+                setTimeout(() => {
+                    document.getElementById('copyButton').textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('שגיאה בהעתקה: ', err);
+                alert('אירעה שגיאה בהעתקה');
+            });
+        }
+    </script>
+</body>
+</html> 
