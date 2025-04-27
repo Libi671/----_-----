@@ -75,6 +75,69 @@
             padding: 20px;
             color: #666;
         }
+        
+        /* סגנון לחלק חילוץ מספרי טלפון */
+        .phone-extractor {
+            margin-top: 40px;
+            border-top: 2px solid #ddd;
+            padding-top: 20px;
+        }
+        .phone-input-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .phone-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            font-size: 14px;
+            direction: ltr;
+            text-align: left;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .extract-button {
+            padding: 8px 15px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .phone-results {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-line;
+            direction: ltr;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .copy-button {
+            padding: 8px 15px;
+            background-color: #128C7E;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #25D366;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +150,19 @@
         </div>
         
         <div id="results" class="results"></div>
+        
+        <!-- חלק חדש לחילוץ מספרי טלפון -->
+        <div class="phone-extractor">
+            <h2 class="section-title">חילוץ מספרי טלפון מרשימות</h2>
+            
+            <div class="phone-input-container">
+                <textarea id="phoneInput" class="phone-textarea" placeholder="הדבק כאן רשימה המכילה מספרי טלפון (כמו רשימת אנשי קשר מוואטסאפ)"></textarea>
+                <button onclick="extractPhoneNumbers()" class="extract-button">חלץ מספרי טלפון</button>
+            </div>
+            
+            <div id="phoneResults" class="phone-results" style="display: none;"></div>
+            <button id="copyButton" onclick="copyPhoneNumbers()" class="copy-button" style="display: none;">העתק הכל</button>
+        </div>
     </div>
     
     <script>
@@ -218,6 +294,61 @@ https://chat.whatsapp.com/Ab12CdEfGhi3JklMnOpQrS`
 שיווק שותפים הוא אחת הדרכים המובילות להכנסה פסיבית.`
                 }
             ];
+        }
+        
+        // פונקציות לחילוץ מספרי טלפון
+        function extractPhoneNumbers() {
+            const inputText = document.getElementById('phoneInput').value.trim();
+            if (!inputText) {
+                alert('אנא הדבק טקסט המכיל מספרי טלפון');
+                return;
+            }
+            
+            // ביטוי רגולרי שמזהה מספרי טלפון במגוון פורמטים
+            const phoneRegex = /\+?([\d\s\-\(\)]{7,})/g;
+            
+            // מוצא את כל מספרי הטלפון בטקסט
+            let matches = inputText.match(phoneRegex) || [];
+            
+            // מנקה את המספרים - מסיר סימנים מיוחדים ואת ה-+
+            const cleanedNumbers = matches.map(match => {
+                // מסיר את כל התווים שאינם ספרות
+                return match.replace(/\+/, '').replace(/[^\d]/g, '');
+            });
+            
+            // מסנן כפילויות ומספרים קצרים מדי
+            const uniqueNumbers = [...new Set(cleanedNumbers)].filter(num => num.length >= 7);
+            
+            // אם לא נמצאו מספרים
+            if (uniqueNumbers.length === 0) {
+                document.getElementById('phoneResults').innerHTML = 'לא נמצאו מספרי טלפון בטקסט שהוזן';
+                document.getElementById('phoneResults').style.display = 'block';
+                document.getElementById('copyButton').style.display = 'none';
+                return;
+            }
+            
+            // מציג את המספרים
+            document.getElementById('phoneResults').innerHTML = uniqueNumbers.join('\n');
+            document.getElementById('phoneResults').style.display = 'block';
+            document.getElementById('copyButton').style.display = 'inline-block';
+        }
+        
+        // פונקציה להעתקת מספרי הטלפון ללוח
+        function copyPhoneNumbers() {
+            const phoneResultsText = document.getElementById('phoneResults').textContent;
+            
+            // שימוש ב-Clipboard API להעתקה ללוח
+            navigator.clipboard.writeText(phoneResultsText).then(() => {
+                // הודעה זמנית להצלחה
+                const originalText = document.getElementById('copyButton').textContent;
+                document.getElementById('copyButton').textContent = 'הועתק בהצלחה!';
+                setTimeout(() => {
+                    document.getElementById('copyButton').textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('שגיאה בהעתקה: ', err);
+                alert('אירעה שגיאה בהעתקה');
+            });
         }
     </script>
 </body>
