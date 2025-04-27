@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חיפוש קבוצות וואטסאפ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .search-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .search-input {
+            padding: 8px;
+            width: 70%;
+            font-size: 16px;
+        }
+        .search-button {
+            padding: 8px 15px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-right: 4px solid #25D366;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-context {
+            background-color: white;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #eee;
+            margin-top: 10px;
+            white-space: pre-line;
+        }
+        .result-link {
+            color: #128C7E;
+            text-decoration: none;
+            display: block;
+            margin-top: 5px;
+        }
+        .result-link:hover {
+            text-decoration: underline;
+        }
+        .highlight {
+            background-color: #DCFAE3;
+            padding: 0 2px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>חיפוש קבוצות וואטסאפ עם מילות מפתח</h1>
+        
+        <div class="search-form">
+            <input type="text" id="keyword" class="search-input" placeholder="הכנס מילת מפתח (לדוגמה: שיווק שותפים)">
+            <button onclick="performSearch()" class="search-button">חפש</button>
+        </div>
+        
+        <div id="results" class="results"></div>
+    </div>
+    
+    <script>
+        // הגדרת קבועים עבור מנוע החיפוש המותאם אישית של Google
+        const API_KEY = 'AIzaSyDSsQgypxmJdT6iIys_2J4H8aFDfkTk6Ok';
+        const SEARCH_ENGINE_ID = '341995b6508ad4eae';
+        
+        async function performSearch() {
+            const keyword = document.getElementById('keyword').value.trim();
+            if (!keyword) {
+                alert('אנא הכנס מילת מפתח לחיפוש');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>מחפש...</p>';
+            
+            try {
+                // ביצוע חיפוש אמיתי באמצעות Google Programmable Search
+                const searchResults = await googleSearch(keyword);
+                
+                if (searchResults.length === 0) {
+                    resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות לחיפוש זה</div>';
+                    return;
+                }
+                
+                let resultsHtml = '';
+                searchResults.forEach(result => {
+                    const highlightedContext = highlightText(result.context, keyword);
+                    
+                    resultsHtml += `
+                        <div class="result-item">
+                            <div class="result-title">${result.title}</div>
+                            <a href="${result.url}" target="_blank" class="result-link">${result.url}</a>
+                            <div class="result-context">${highlightedContext}</div>
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.innerHTML = resultsHtml;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="no-results">שגיאה בעת ביצוע החיפוש: ${error.message}</div>`;
+                console.error('Search error:', error);
+            }
+        }
+        
+        function highlightText(text, keyword) {
+            // הדגשת מילת המפתח וקישורי וואטסאפ
+            const whatsappPattern = /(https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]+)/g;
+            const keywordRegex = new RegExp(keyword, 'gi');
+            
+            return text
+                .replace(whatsappPattern, '<span class="highlight">$1</span>')
+                .replace(keywordRegex, match => `<span class="highlight">${match}</span>`);
+        }
+        
+        async function googleSearch(keyword) {
+            try {
+                // יצירת שאילתת חיפוש: מילת המפתח + קישורי וואטסאפ
+                // מחפש את מילת המפתח שהוזנה + וואטסאפ לינק
+                const query = `${keyword} "https://chat.whatsapp.com/"`;
+                
+                // בניית ה-URL עבור ה-API של Google Custom Search
+                const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${encodeURIComponent(query)}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // בדיקה אם יש שגיאה בתשובה
+                if (data.error) {
+                    throw new Error(`Google API error: ${data.error.message}`);
+                }
+                
+                // בדיקה אם יש תוצאות
+                if (!data.items || data.items.length === 0) {
+                    return [];
+                }
+                
+                // עיבוד התוצאות למבנה הנתונים שאנחנו משתמשים בו
+                return data.items.map(item => {
+                    // חילוץ קטע טקסט מהתיאור או מתוכן הדף
+                    const snippet = item.snippet || '';
+                    
+                    // חיפוש קישור וואטסאפ בטקסט
+                    const whatsappLinkMatch = snippet.match(/(https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]+)/);
+                    const whatsappLink = whatsappLinkMatch ? whatsappLinkMatch[0] : item.link;
+                    
+                    return {
+                        title: item.title || 'ללא כותרת',
+                        url: whatsappLink,
+                        context: snippet
+                    };
+                });
+                
+            } catch (error) {
+                console.error('Error during Google search:', error);
+                throw error;
+            }
+        }
+        
+        // פונקציה חלופית למקרה שה-API של Google אינו זמין
+        async function fallbackSearch(keyword) {
+            console.log('Using fallback search with keyword:', keyword);
+            
+            // חיכוי קצר לדימוי חיפוש
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // תוצאות לדוגמה
+            return [
+                {
+                    title: "קבוצת שיווק שותפים - וואטסאפ",
+                    url: "https://chat.whatsapp.com/EF34zTC0Bxb59T0HkD7pKq",
+                    context: `קבוצת שיווק שותפים המובילה בישראל!
+הצטרפו עכשיו לקבוצה: https://chat.whatsapp.com/EF34zTC0Bxb59T0HkD7pKq
+למידע נוסף על שיווק שותפים והזדמנויות חדשות.`
+                },
+                {
+                    title: "פורום שיווק שותפים - דיונים והדרכות",
+                    url: "https://example.com/forum/affiliate-marketing",
+                    context: `שיווק שותפים - איך להתחיל? מדריך למתחילים
+רוצים ללמוד עוד? הצטרפו לקבוצת הוואטסאפ שלנו:
+https://chat.whatsapp.com/Ab12CdEfGhi3JklMnOpQrS`
+                },
+                {
+                    title: "קורס שיווק שותפים אונליין",
+                    url: "https://example.com/courses/affiliate-marketing",
+                    context: `הקורס המקיף ביותר לשיווק שותפים בישראל
+לשאלות ותמיכה הצטרפו לקהילה: https://chat.whatsapp.com/Jk56LmNoPq78RsTuVwXyz9
+שיווק שותפים הוא אחת הדרכים המובילות להכנסה פסיבית.`
+                }
+            ];
+        }
+    </script>
+</body>
+</html> 
